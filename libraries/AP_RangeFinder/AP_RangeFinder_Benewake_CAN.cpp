@@ -54,6 +54,11 @@ AP_RangeFinder_Benewake_CAN::AP_RangeFinder_Benewake_CAN(RangeFinder::RangeFinde
 // update state
 void AP_RangeFinder_Benewake_CAN::update(void)
 {
+
+    const AP_HAL::HAL& hal = AP_HAL::get_HAL();
+    hal.serial(4)->printf("AP_RangeFinder_Benewake_CAN::update()\n\r");
+
+
     WITH_SEMAPHORE(_sem);
     const uint32_t now = AP_HAL::millis();
     if (_distance_count == 0 && now - state.last_reading_ms > 500) {
