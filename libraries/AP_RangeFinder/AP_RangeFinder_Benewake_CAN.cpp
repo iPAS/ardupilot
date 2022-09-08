@@ -3,6 +3,8 @@
 #include "AP_RangeFinder_Benewake_CAN.h"
 #include <AP_HAL/utility/sparse-endian.h>
 
+extern const AP_HAL::HAL &hal;
+
 #if AP_RANGEFINDER_BENEWAKE_CAN_ENABLED
 
 const AP_Param::GroupInfo AP_RangeFinder_Benewake_CAN::var_info[] = {
@@ -54,11 +56,6 @@ AP_RangeFinder_Benewake_CAN::AP_RangeFinder_Benewake_CAN(RangeFinder::RangeFinde
 // update state
 void AP_RangeFinder_Benewake_CAN::update(void)
 {
-
-    const AP_HAL::HAL& hal = AP_HAL::get_HAL();
-    hal.serial(4)->printf("AP_RangeFinder_Benewake_CAN::update()\n\r");
-
-
     WITH_SEMAPHORE(_sem);
     const uint32_t now = AP_HAL::millis();
     if (_distance_count == 0 && now - state.last_reading_ms > 500) {
@@ -70,12 +67,22 @@ void AP_RangeFinder_Benewake_CAN::update(void)
         _distance_sum_cm = 0;
         _distance_count = 0;
         update_status();
+
+
+        hal.serial(4)->printf("AP_RangeFinder_Benewake_CAN::update(): New data %.4f\n\r", state.distance_m);
+
+
     }
 }
 
 // handler for incoming frames for H30 radar
 bool AP_RangeFinder_Benewake_CAN::handle_frame_H30(AP_HAL::CANFrame &frame)
 {
+
+
+    hal.serial(4)->printf("AP_RangeFinder_Benewake_CAN::handle_frame_H30()\n\r");
+
+
     /*
       The H30 produces 3 targets, each as 16 bit unsigned integers in
       cm. Only look at target1 for now
@@ -97,6 +104,11 @@ bool AP_RangeFinder_Benewake_CAN::handle_frame_H30(AP_HAL::CANFrame &frame)
 // handler for incoming frames. These come in at 100Hz
 bool AP_RangeFinder_Benewake_CAN::handle_frame(AP_HAL::CANFrame &frame)
 {
+
+
+    hal.serial(4)->printf("AP_RangeFinder_Benewake_CAN::handle_frame()\n\r");
+
+
     WITH_SEMAPHORE(_sem);
     if (frame.isExtended()) {
         // H30 radar uses extended frames

@@ -284,10 +284,6 @@ void RangeFinder::init(enum Rotation orientation_default)
         WITH_SEMAPHORE(detect_sem);
         detect_instance(i, serial_instance);
 
-
-        hal.serial(4)->printf("RangeFinder::init(): i:%d instance:%d\n\r", i, serial_instance);
-
-
         if (drivers[i] != nullptr) {
             // we loaded a driver for this instance, so it must be
             // present (although it may not be healthy). We use MAX()
@@ -354,7 +350,8 @@ void RangeFinder::detect_instance(uint8_t instance, uint8_t& serial_instance)
     const Type _type = (Type)params[instance].type.get();
 
 
-    hal.serial(4)->printf("RangeFinder::detect_instance(): _type = %d\n\r", (int)_type);
+    if ((int)_type != 0)
+        hal.serial(4)->printf("RangeFinder::detect_instance(): _type = %d\n\r", (int)_type);
 
 
     switch (_type) {
