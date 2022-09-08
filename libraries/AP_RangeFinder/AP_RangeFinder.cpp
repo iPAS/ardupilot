@@ -349,11 +349,6 @@ void RangeFinder::detect_instance(uint8_t instance, uint8_t& serial_instance)
 
     const Type _type = (Type)params[instance].type.get();
 
-
-    if ((int)_type != 0)
-        hal.serial(4)->printf("RangeFinder::detect_instance(): _type = %d\n\r", (int)_type);
-
-
     switch (_type) {
     case Type::PLI2C:
     case Type::PLI2CV3:

@@ -104,14 +104,8 @@ void CANSensor::init(uint8_t driver_index, bool enable_filters)
 
 bool CANSensor::add_interface(AP_HAL::CANIface* can_iface)
 {
-
-
-    hal.serial(4)->printf("CANSensor::add_interface()\n\r");
-
-
     if (_can_iface != nullptr) {
         debug_can(AP_CANManager::LOG_ERROR, "Multiple Interface not supported");
-        hal.serial(4)->printf("Multiple Interface not supported\n\r");
         return false;
     }
 
@@ -119,19 +113,16 @@ bool CANSensor::add_interface(AP_HAL::CANIface* can_iface)
 
     if (_can_iface == nullptr) {
         debug_can(AP_CANManager::LOG_ERROR, "CAN driver not found\n\r");
-        hal.serial(4)->printf("CAN driver not found");
         return false;
     }
 
     if (!_can_iface->is_initialized()) {
         debug_can(AP_CANManager::LOG_ERROR, "Driver not initialized\n\r");
-        hal.serial(4)->printf("Driver not initialized");
         return false;
     }
 
     if (!_can_iface->set_event_handle(&_event_handle)) {
         debug_can(AP_CANManager::LOG_ERROR, "Cannot add event handle\n\r");
-        hal.serial(4)->printf("Cannot add event handle");
         return false;
     }
     return true;
@@ -168,10 +159,6 @@ void CANSensor::loop()
     const uint32_t LOOP_INTERVAL_US = AP::scheduler().get_loop_period_us();
 #endif
 
-
-    hal.serial(4)->printf("CANSensor::loop()\n\r");
-
-
     while (true) {
         uint64_t timeout = AP_HAL::micros64() + LOOP_INTERVAL_US;
 
@@ -179,20 +166,6 @@ void CANSensor::loop()
         bool read_select = true;
         bool write_select = false;
         bool ret = _can_iface->select(read_select, write_select, nullptr, timeout);
-
-
-        static uint32_t next_millis = AP_HAL::millis() + 10000;
-        if (AP_HAL::millis() > next_millis || ret || read_select) {
-            hal.serial(4)->printf("CANSensor::loop() @%lu select %d %d \n\r", AP_HAL::millis(), ret, read_select);
-            next_millis = AP_HAL::millis() + 10000;
-        }
-
-        // uint64_t t = 1000;
-        // AP_HAL::CANIface::CanIOFlags f {};
-        // AP_HAL::CANFrame frm;
-        // frm.id = 0x000007FF; //  & ~AP_HAL::CANFrame::FlagRTR;
-        // _can_iface->send(frm, t, f);
-
 
         if (ret && read_select) {
             uint64_t time;

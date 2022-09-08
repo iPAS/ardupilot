@@ -104,11 +104,6 @@ bool AP_RangeFinder_Benewake_CAN::handle_frame_H30(AP_HAL::CANFrame &frame)
 // handler for incoming frames. These come in at 100Hz
 bool AP_RangeFinder_Benewake_CAN::handle_frame(AP_HAL::CANFrame &frame)
 {
-
-
-    hal.serial(4)->printf("AP_RangeFinder_Benewake_CAN::handle_frame()\n\r");
-
-
     WITH_SEMAPHORE(_sem);
     if (frame.isExtended()) {
         // H30 radar uses extended frames
