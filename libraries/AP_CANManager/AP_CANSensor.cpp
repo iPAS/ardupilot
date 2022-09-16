@@ -175,7 +175,7 @@ void CANSensor::loop()
             int16_t res = _can_iface->receive(frame, time, flags);
 
 
-            hal.serial(4)->printf("CANSensor::loop() receiving %d \n\r", res);
+            // hal.serial(4)->printf("CANSensor::loop() receiving %d \n\r", res);
 
 
             if (res == 1) {

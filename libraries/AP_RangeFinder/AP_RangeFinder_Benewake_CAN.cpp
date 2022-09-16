@@ -69,7 +69,7 @@ void AP_RangeFinder_Benewake_CAN::update(void)
         update_status();
 
 
-        hal.serial(4)->printf("AP_RangeFinder_Benewake_CAN::update(): New data %.4f\n\r", state.distance_m);
+        // hal.serial(4)->printf("AP_RangeFinder_Benewake_CAN::update(): New data %.4f\n\r", state.distance_m);
 
 
     }
@@ -78,11 +78,6 @@ void AP_RangeFinder_Benewake_CAN::update(void)
 // handler for incoming frames for H30 radar
 bool AP_RangeFinder_Benewake_CAN::handle_frame_H30(AP_HAL::CANFrame &frame)
 {
-
-
-    hal.serial(4)->printf("AP_RangeFinder_Benewake_CAN::handle_frame_H30()\n\r");
-
-
     /*
       The H30 produces 3 targets, each as 16 bit unsigned integers in
       cm. Only look at target1 for now
@@ -104,6 +99,11 @@ bool AP_RangeFinder_Benewake_CAN::handle_frame_H30(AP_HAL::CANFrame &frame)
 // handler for incoming frames. These come in at 100Hz
 bool AP_RangeFinder_Benewake_CAN::handle_frame(AP_HAL::CANFrame &frame)
 {
+
+
+    hal.serial(4)->printf("AP_RangeFinder_Benewake_CAN::handle_frame()\n\r");
+
+
     WITH_SEMAPHORE(_sem);
     if (frame.isExtended()) {
         // H30 radar uses extended frames
@@ -145,6 +145,11 @@ bool AP_RangeFinder_Benewake_CAN::handle_frame(AP_HAL::CANFrame &frame)
 // handle frames from CANSensor, passing to the drivers
 void Benewake_MultiCAN::handle_frame(AP_HAL::CANFrame &frame)
 {
+
+
+    hal.serial(4)->printf("Benewake_MultiCAN::handle_frame()\n\r");
+
+
     WITH_SEMAPHORE(sem);
     for (auto *d = drivers; d; d=d->next) {
         if (d->handle_frame(frame)) {
